@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2018-01-04T16:57:26.127Z</updated>
+  <updated>2018-01-04T17:10:48.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,10 +20,10 @@
     <link href="http://yoursite.com/2018/01/03/%E5%85%B3%E4%BA%8Eeventloop%E7%9A%84%E7%90%86%E8%A7%A3/"/>
     <id>http://yoursite.com/2018/01/03/关于eventloop的理解/</id>
     <published>2018-01-03T12:00:36.000Z</published>
-    <updated>2018-01-04T16:57:26.127Z</updated>
+    <updated>2018-01-04T17:10:48.000Z</updated>
     
     <content type="html"><![CDATA[<h4 id="唠唠叨叨"><a href="#唠唠叨叨" class="headerlink" title="唠唠叨叨"></a>唠唠叨叨</h4><p>距离上一篇博客已经快一年，制定2018年的目标的时候，想了想2017年的基本没有完成，就把2017改个title，变成2018的然后就完事。在此希望18年不会再如此荒废。闲话不多说，进入正题。</p>
-<h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>众所周知，JavaScript是单线程的，任务都只在一个线程上面执行，那么意味着只有等前面一个任务处理完毕，才会执行后一个任务，如果前一个任务执行时间很长，后面的任务就只能一直等着，那么对于ajax、Dom操作，setTimeout、Promise等这些耗时的任务，JavaScript是怎么处理的（不同环境不同实现，这里应该是相应的JavaScript运行环境是怎么处理的），以不至于让程序处于一直等待的状态。event loop就是JavaScript用来实现异步操作，解决上述问题的一种机制。</p>
+<h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>众所周知，JavaScript是单线程的，任务都只在一个线程上面执行，那么意味着只有等前面一个任务处理完毕，才会执行后一个任务，如果前一个任务执行时间很长，后面的任务就只能一直等着，那么对于ajax、Dom操作，setTimeout、Promise等这些耗时的任务，JavaScript是怎么处理的（不同环境不同实现，这里应该是相应的JavaScript运行环境是怎么处理的），以不至于让程序处于一直等待的状态。event loop就是JavaScript用来解决上述问题的一种机制。</p>
 <h4 id="事件循环（event-loop）"><a href="#事件循环（event-loop）" class="headerlink" title="事件循环（event loop）"></a>事件循环（event loop）</h4><p>先讲讲什么是事件循环，<br>W3给的原文：To coordinate events, user interaction, scripts, rendering, networking, and so forth, user agents must use event loops as described in this section. There are two kinds of event loops: those for browsing contexts, and those for workers.（为了协调事件，用户交互，脚本，渲染，网络等，用户代理必须使用本节描述的事件循环。有两种事件循环：用于浏览上下文的事件循环，以及针对workers的事件循环）。这个解释跟上述为什么要有event loop相吻合。<br>事件循环是怎么做的：Javascript在主线程运行的时候，会有一个堆，一个执行栈，一个事件循环，一个或者多个任务队列。堆：相关的对象会被分配在堆中。在Javascript运行时，程序中的代码会依次进入执行栈中，然后执行，当遇到需要延时执行的事件时，如setTimeout，ajax，Dom操作等，Javascript就会把这些方法交给浏览器即（webAPI）的其他模块处理，使其不至于阻塞主线程的执行，等浏览器的模块处理完延时事件后，会把相应的回调压入任务队列中，等执行栈中的事件执行完毕后，主线程通过事件循环去任务队列中读取相应的回调，并进入执行栈进行执行。等执行栈的任务执行完之后，再去任务队列读取相应回调，如此往复。如下图：<br><img src="/images/eventloop/eventloop1.jpeg" style="width: 400px;"><br>下面用人家演讲的视频截图来说明这个过程。</p>
 <p>程序等待执行时，执行栈，webAPI，任务队列都为空。<br><img src="/images/eventloop/eventloop2.jpeg" style="width: 600px;"></p>
 <p>程序开始执行时，先将一个main()主方法加入执行栈中，此方法相当于程序的入口。<br><img src="/images/eventloop/eventloop3.jpeg" style="width: 600px;"></p>
